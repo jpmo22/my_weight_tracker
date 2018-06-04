@@ -39,8 +39,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
   initState() {
     super.initState();
     initDB();
@@ -52,12 +50,6 @@ class _MyHomePageState extends State<MyHomePage> {
     await provider.open(path);
     _data = await provider.get();
     provider.close();
-  }
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
   }
 
   @override
