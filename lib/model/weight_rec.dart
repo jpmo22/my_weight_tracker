@@ -58,7 +58,8 @@ class WeightRecProvider {
 
   Future<WeightRec> insert(WeightRec weightRec) async {
     int newId = await db.insert(_TABLE, weightRec.toMap());
-    return WeightRec(newId, weightRec._dateTime, weightRec._weight, weightRec.diff);
+    return WeightRec(
+        newId, weightRec._dateTime, weightRec._weight, weightRec.diff);
   }
 
   Future<List<WeightRec>> get() async {
@@ -67,14 +68,14 @@ class WeightRecProvider {
       columns: [_COL_ID, _COL_DATETIME, _COL_WEIGHT, _COL_DIFF],
     );
 
-    if (maps.length == 0){
+    if (maps.length == 0) {
       sampleData();
       return await get();
     }
 
     List<WeightRec> result = [];
-    for (Map m in maps){
-      result.add( WeightRec.fromMap(m) );
+    for (Map m in maps) {
+      result.add(WeightRec.fromMap(m));
     }
     return result;
   }
@@ -101,6 +102,11 @@ class WeightRecProvider {
         where: '$_COL_ID = ?', whereArgs: [weightRec._id]);
   }
 
+  Future<int> lenght() async {
+    return Sqflite
+        .firstIntValue(await db.rawQuery("SELECT COUNT(*) FROM $_TABLE"));
+  }
+
   Future close() async => db.close();
 
   void sampleData() {
@@ -111,11 +117,11 @@ class WeightRecProvider {
     insert(WeightRec(null, DateTime.parse('2018-05-24T22:12:45Z'), 98.7, -0.6));
     insert(WeightRec(null, DateTime.parse('2018-05-23T22:22:23Z'), 99.3, -0.5));
     insert(WeightRec(null, DateTime.parse('2018-05-22T23:01:43Z'), 99.8, -0.2));
-    insert(WeightRec(null, DateTime.parse('2018-05-21T22:13:10Z'), 100.0, -1.2));
+    insert(
+        WeightRec(null, DateTime.parse('2018-05-21T22:13:10Z'), 100.0, -1.2));
     insert(WeightRec(null, DateTime.parse('2018-05-20T20:45:09Z'), 101.2, 0.1));
-    insert(WeightRec(null, DateTime.parse('2018-05-19T19:32:05Z'), 101.1, -0.6));
+    insert(
+        WeightRec(null, DateTime.parse('2018-05-19T19:32:05Z'), 101.1, -0.6));
     insert(WeightRec(null, DateTime.parse('2018-05-18T23:10:13Z'), 101.7, 0.0));
   }
 }
-
-

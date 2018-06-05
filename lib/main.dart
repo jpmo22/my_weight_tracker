@@ -5,6 +5,7 @@ import 'package:numberpicker/numberpicker.dart';
 import 'package:my_weight_tracker/model/weight_rec.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'chart.dart';
 
 void main() => runApp(new MyApp());
 
@@ -15,25 +16,23 @@ WeightRecProvider provider = WeightRecProvider();
 
 class MyApp extends StatelessWidget {
   @override
-  Widget build(BuildContext context)  {
-
+  Widget build(BuildContext context) {
     return new MaterialApp(
       title: 'My Weight Tracker',
       theme: new ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.teal,
       ),
       home: new MyHomePage(title: 'My Weight Tracker'),
     );
   }
 }
 
-
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
   final String title;
 
   @override
-  _MyHomePageState createState() => new _MyHomePageState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -72,26 +71,55 @@ class _MyHomePageState extends State<MyHomePage> {
             children: <Widget>[
               Scaffold(
                 body: Center(
-                  child: Row(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text(
-                        'kg',
-                        style: TextStyle(
-                          fontSize: 25.0,
-                          fontStyle: FontStyle.italic,
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Card(
+                          child: Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: MyChart(
+                              data: extractWeightList(_data),
+                            ),
+                          ),
                         ),
                       ),
-                      Text(
-                        _currentWeight.floor().toString(),
-                        style: TextStyle(
-                          fontSize: 35.0,
-                          fontWeight: FontWeight.bold,
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Card(
+                          child: Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Row(
+                              children: <Widget>[
+                                Text(
+                                  'kg',
+                                  style: TextStyle(
+                                    fontSize: 25.0,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                                Text(
+                                  _currentWeight.floor().toString(),
+                                  style: TextStyle(
+                                    fontSize: 35.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  '.' +
+                                      ((_currentWeight -
+                                                  _currentWeight.floor()) *
+                                              10)
+                                          .toInt()
+                                          .toString(),
+                                  style: TextStyle(fontSize: 25.0),
+                                )
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
-                      Text(
-                        '.' + ((_currentWeight - _currentWeight.floor())*10).toInt().toString(),
-                        style: TextStyle(fontSize: 25.0),
                       ),
                     ],
                   ),
@@ -131,10 +159,22 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ));
   }
+
+  List<double> extractWeightList(List<WeightRec> list) {
+    List<double> result = [];
+    list.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+    for (WeightRec e in list) {
+      result.add(extractWeight(e));
+    }
+    return result;
+  }
+
+  double extractWeight(WeightRec rec) {
+    return rec?.weight;
+  }
 }
 
 class HistoryWidget extends StatelessWidget {
-  
   final WeightRec rec;
 
   HistoryWidget(this.rec);
@@ -157,4 +197,3 @@ class HistoryWidget extends StatelessWidget {
     );
   }
 }
-
